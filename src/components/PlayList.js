@@ -21,7 +21,7 @@ function PlayList({ currentSong, setCurrentSong, setProgress, setIsPlaying }) {
     const songActive = document.querySelector(".song.active");
     songActive.scrollIntoView({
       behavior: "smooth",
-      block: "center",
+      block: "start",
     });
   }, [currentSong]);
 
