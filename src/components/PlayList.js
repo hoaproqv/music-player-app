@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
-import { songs } from "../App";
+import React, { useContext, useEffect } from "react";
+import { SongContext, songs } from "../App";
 
-function PlayList({ currentSong, setCurrentSong, setProgress, setIsPlaying }) {
+function PlayList() {
+  const { currentSong, setCurrentSong, setProgress, setIsPlaying } =
+    useContext(SongContext);
   const handleClick = (event) => {
     setIsPlaying(false);
     setProgress(0);

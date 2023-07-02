@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import "./App.css";
 import DashBoard from "./components/DashBoard";
 import PlayList from "./components/PlayList";
@@ -76,28 +76,30 @@ export const songs = [
   },
 ];
 
+export const SongContext = createContext();
+
 function App() {
   const [currentSong, setCurrentSong] = useState(songs[0]);
   const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+
   return (
     <>
-      <div className="player">
-        <DashBoard
-          currentSong={currentSong}
-          setCurrentSong={setCurrentSong}
-          progress={progress}
-          setProgress={setProgress}
-          isPlaying={isPlaying}
-          setIsPlaying={setIsPlaying}
-        />
-        <PlayList
-          currentSong={currentSong}
-          setCurrentSong={setCurrentSong}
-          setProgress={setProgress}
-          setIsPlaying={setIsPlaying}
-        />
-      </div>
+      <SongContext.Provider
+        value={{
+          currentSong,
+          setCurrentSong,
+          progress,
+          setProgress,
+          isPlaying,
+          setIsPlaying,
+        }}
+      >
+        <div className="player">
+          <DashBoard />
+          <PlayList />
+        </div>
+      </SongContext.Provider>
     </>
   );
 }

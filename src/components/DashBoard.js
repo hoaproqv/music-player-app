@@ -1,47 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { songs } from "../App";
+import React, { useContext, useEffect, useState } from "react";
+import { SongContext, songs } from "../App";
 
-function DashBoard({
-  currentSong,
-  setCurrentSong,
-  progress,
-  setProgress,
-  isPlaying,
-  setIsPlaying,
-}) {
+function DashBoard() {
+  const {
+    currentSong,
+    setCurrentSong,
+    progress,
+    setProgress,
+    isPlaying,
+    setIsPlaying,
+  } = useContext(SongContext);
   const [repeat, setRepeat] = useState(false);
   const [random, setRandom] = useState(false);
+
+  const playNewSong = () => {
+    setProgress(0);
+    if (isPlaying) {
+      setIsPlaying(true);
+    }
+  };
+
   const handlePrevBtn = () => {
     if (currentSong.id > 0) {
       setCurrentSong(songs[currentSong.id - 1]);
-      setProgress(0);
-      if (isPlaying) {
-        setIsPlaying(true);
-      }
+      playNewSong();
     }
   };
+
   const handleNextBtn = () => {
     if (random) {
       setCurrentSong(songs[Math.floor(Math.random() * songs.length)]);
-      setProgress(0);
-      if (isPlaying) {
-        setIsPlaying(true);
-      }
+      playNewSong();
     } else {
       if (currentSong.id < songs.length - 1) {
         setCurrentSong(songs[currentSong.id + 1]);
-        setProgress(0);
-        if (isPlaying) {
-          setIsPlaying(true);
-        }
+        playNewSong();
       }
     }
   };
+
   const handlePlayBtn = () => {
     if (!isPlaying) {
       setIsPlaying(true);
     } else {
       setIsPlaying(false);
+    }
+  };
+
+  const handleEndSong = () => {
+    if (repeat) {
+      const audio = document.querySelector("#audio");
+      audio.play();
+    } else {
+      handleNextBtn();
     }
   };
 
@@ -55,15 +66,6 @@ function DashBoard({
     }
   };
 
-  const handleEndSong = () => {
-    if (repeat) {
-      const audio = document.querySelector("#audio");
-      audio.play();
-    } else {
-      handleNextBtn();
-    }
-  };
-
   const handleRandomSong = (event) => {
     if (!random) {
       setRandom(true);
@@ -74,9 +76,10 @@ function DashBoard({
     }
   };
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentSong]);
+  const handleProgressInput = (e) => {
+    const audio = document.querySelector("#audio");
+    audio.currentTime = (e.target.value / 100) * audio.duration;
+  };
 
   useEffect(() => {
     const audio = document.querySelector("#audio");
@@ -90,11 +93,6 @@ function DashBoard({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, currentSong]);
-
-  const handleProgressInput = (e) => {
-    const audio = document.querySelector("#audio");
-    audio.currentTime = (e.target.value / 100) * audio.duration;
-  };
 
   return (
     <div className="dashboard">
